@@ -17,7 +17,7 @@ Versión autónoma de CoffeeHouse para el Moto G100 de la barra: PWA instalable,
 4. **Settings → Pages** → en "Build and deployment" elegí **Deploy from a branch** → branch `main`, carpeta `/ (root)` → Save.
 5. Esperá 1–2 minutos y va a aparecer la URL: `https://TU-USUARIO.github.io/coffeehouse/`
 
-Para futuras versiones: repetís el paso 3 subiendo el `index.html` nuevo (y cambiá `coffeehouse-v1` por `-v2` en `sw.js` para que el caché se renueve).
+Para futuras versiones: repetís el paso 3 subiendo el `index.html` nuevo (y subí el número de versión del caché (p. ej. `v2` → `v3`) en `sw.js` para que el caché se renueve).
 
 ## Paso 2 — Instalar en el G100
 

@@ -1,4 +1,4 @@
-const CACHE = 'coffeehouse-v1';
+const CACHE = 'coffeehouse-v2';
 const SHELL = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
