@@ -44,6 +44,8 @@
 
   nav{display:flex;gap:5px;margin:16px 0 20px;background:var(--grey-soft);padding:5px;border-radius:999px;position:sticky;top:8px;z-index:5}
   nav button{flex:1;border:0;background:transparent;font-family:var(--display);font-weight:700;font-size:14.5px;color:var(--ink-soft);padding:10px 6px;border-radius:999px;cursor:pointer;transition:background .15s,color .15s}
+  nav{transition:transform .25s ease}
+  nav.nav-oculta{transform:translateY(-140%)}
   nav button.active{background:var(--card);color:var(--brick);box-shadow:0 1px 3px rgba(58,42,30,.14)}
   nav button:focus-visible{outline:2px solid var(--olive);outline-offset:2px}
 
@@ -172,11 +174,9 @@
   .std .ajuste-item{font-size:12.5px;padding:4px 0 4px 10px}
   .std .ajuste-item b{min-width:104px}
   .std .divider{margin:10px 0}
-  .receta{scroll-snap-align:start;flex:0 0 300px;margin-bottom:0;display:flex;flex-direction:column}
-  .receta-body{display:flex;gap:14px;margin-top:8px;align-items:flex-start;flex:1}
-  .receta-body ul{flex:1;margin-top:0}
-  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;border:1px solid rgba(58,42,30,.25)}
-  .cup-outer{position:relative;flex-shrink:0;margin:4px 14px 0 0}
+  .receta{scroll-snap-align:start;flex:0 0 400px;margin-bottom:0;display:flex;flex-direction:column}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;border:1px solid rgba(58,42,30,.25);flex-shrink:0}
+  .cup-outer{position:relative;flex-shrink:0;margin:2px 0 0}
   .cup{border:3px solid var(--ink);background:linear-gradient(#fff,#FDF8EF);display:flex;flex-direction:column-reverse;overflow:hidden}
   .cup.taza{width:78px;height:50px;border-radius:6px 6px 30px 30px}
   .cup.vaso{width:48px;height:62px;border-radius:4px 4px 10px 10px}
@@ -184,12 +184,12 @@
   .cup-handle{position:absolute;right:-12px;top:9px;width:14px;height:22px;border:3px solid var(--ink);border-left:0;border-radius:0 10px 10px 0}
   .cup-outer::after{content:'';display:block;margin:3px auto 0;height:6px;border-radius:99px;background:var(--line);width:90%}
   .cup-layer{width:100%;flex-shrink:0}
-  .receta h3{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-  .receta .taza{font-family:var(--mono);font-size:11px;color:var(--ink-soft);font-weight:500;white-space:nowrap}
-  .receta ul{list-style:none;margin-top:8px}
-  .receta li{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;font-weight:600;padding:5px 0;border-bottom:1.5px dashed var(--line)}
-  .receta li:last-child{border-bottom:0}
-  .receta li span:last-child{font-family:var(--mono);font-size:12.5px;font-weight:600;text-align:right}
+  .receta h3{font-size:17px}
+  .receta-top{display:flex;flex-direction:column;align-items:center;margin:8px 0 12px}
+  .taza-ml{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-top:8px}
+  .ing-line{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;font-size:13.5px;font-weight:600;padding:0 4px}
+  .ing{white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+  .ing b{font-family:var(--mono);font-size:12.5px;font-weight:600}
   .receta .nota{font-size:12px;color:var(--ink-soft);margin-top:auto;padding-top:8px;font-style:italic;font-weight:600}
 
   [data-theme="dark"]{
@@ -302,74 +302,50 @@
   <section id="tab-preparaciones" class="tab">
     <p class="muted" style="margin-bottom:8px">Medidas base: espresso simple 9 g → 18 g · doble 18 g → 36 g. Ajustá a tu calibre de cada variedad.</p>
     <div class="h-scroll">
-      <div class="card receta"><h3>Espresso <span class="taza">60–70 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#4A2C17"></i>Café</span><span>18 g → 36 g</span></li><li><span>Tiempo</span><span>25–30 s</span></li><li><span>Leche</span><span>—</span></li></ul>
-          <div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:38%;background:#4A2C17"></div></div><div class="cup-handle"></div></div>
-        </div></div>
-      <div class="card receta"><h3>Ristretto <span class="taza">60 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#38200F"></i>Café</span><span>18 g → 22–27 g</span></li><li><span>Ratio</span><span>1:1 – 1:1,5</span></li><li><span>Tiempo</span><span>~20 s</span></li></ul>
-          <div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:28%;background:#38200F"></div></div><div class="cup-handle"></div></div>
-        </div>
+      <div class="card receta"><h3>Espresso</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:38%;background:#4A2C17"></div></div><div class="cup-handle"></div></div><div class="taza-ml">60–70 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Café <b>18 g → 36 g</b></span><span class="ing">Tiempo <b>25–30 s</b></span></div></div>
+      <div class="card receta"><h3>Ristretto</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:28%;background:#38200F"></div></div><div class="cup-handle"></div></div><div class="taza-ml">60 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#38200F"></i>Café <b>18 g → 22–27 g</b></span><span class="ing">Ratio <b>1:1–1:1,5</b></span><span class="ing">Tiempo <b>~20 s</b></span></div>
         <p class="nota">Espresso "restringido": puede ser simple o doble, pero en especialidad se tira casi siempre doble (como acá). Base ideal del magic.</p></div>
-      <div class="card receta"><h3>Americano <span class="taza">180 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#4A2C17"></i>Espresso</span><span>doble (36 g)</span></li><li><span><i class="dot" style="background:#C7E0E4"></i>Agua caliente</span><span>90–120 ml</span></li></ul>
-          <div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:32%;background:#4A2C17"></div><div class="cup-layer" style="height:44%;background:#C7E0E4"></div></div><div class="cup-handle"></div></div>
-        </div>
+      <div class="card receta"><h3>Americano</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:32%;background:#4A2C17"></div><div class="cup-layer" style="height:44%;background:#C7E0E4"></div></div><div class="cup-handle"></div></div><div class="taza-ml">180 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble</b></span><span class="ing"><i class="dot" style="background:#C7E0E4"></i>Agua caliente <b>90–120 ml</b></span></div>
         <p class="nota">Espresso primero, agua encima. Más suave y diluido.</p></div>
-      <div class="card receta"><h3>Long black <span class="taza">120–160 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#C7E0E4"></i>Agua caliente</span><span>90–120 ml</span></li><li><span><i class="dot" style="background:#4A2C17"></i>Espresso</span><span>doble encima</span></li></ul>
-          <div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:44%;background:#C7E0E4"></div><div class="cup-layer" style="height:30%;background:#4A2C17"></div></div><div class="cup-handle"></div></div>
-        </div>
+      <div class="card receta"><h3>Long black</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:44%;background:#C7E0E4"></div><div class="cup-layer" style="height:30%;background:#4A2C17"></div></div><div class="cup-handle"></div></div><div class="taza-ml">120–160 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#C7E0E4"></i>Agua <b>90–120 ml</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble encima</b></span></div>
         <p class="nota">Agua primero, espresso encima: conserva la crema. Más intenso que el americano.</p></div>
-      <div class="card receta"><h3>Cortado <span class="taza">90 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#4A2C17"></i>Espresso</span><span>simple o doble</span></li><li><span><i class="dot" style="background:#F1DFC2"></i>Leche vaporizada</span><span>1:1 (~40 ml)</span></li><li><span><i class="dot" style="background:#FBF4E4"></i>Espuma</span><span>mínima</span></li></ul>
-          <div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:34%;background:#4A2C17"></div><div class="cup-layer" style="height:34%;background:#F1DFC2"></div><div class="cup-layer" style="height:6%;background:#FBF4E4"></div></div></div>
-        </div>
+      <div class="card receta"><h3>Cortado</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:34%;background:#4A2C17"></div><div class="cup-layer" style="height:34%;background:#F1DFC2"></div><div class="cup-layer" style="height:6%;background:#FBF4E4"></div></div></div><div class="taza-ml">90 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>simple/doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>1:1 (~40 ml)</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>mínima</b></span></div>
         <p class="nota">En vasito de vidrio, como corresponde.</p></div>
-      <div class="card receta"><h3>Flat white <span class="taza">160–180 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#4A2C17"></i>Espresso</span><span>doble (36 g)</span></li><li><span><i class="dot" style="background:#F1DFC2"></i>Leche texturizada</span><span>110–130 ml</span></li><li><span><i class="dot" style="background:#FBF4E4"></i>Microespuma</span><span>~0,5 cm</span></li></ul>
-          <div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:26%;background:#4A2C17"></div><div class="cup-layer" style="height:56%;background:#F1DFC2"></div><div class="cup-layer" style="height:9%;background:#FBF4E4"></div></div><div class="cup-handle"></div></div>
-        </div>
+      <div class="card receta"><h3>Flat white</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:26%;background:#4A2C17"></div><div class="cup-layer" style="height:56%;background:#F1DFC2"></div><div class="cup-layer" style="height:9%;background:#FBF4E4"></div></div><div class="cup-handle"></div></div><div class="taza-ml">160–180 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>110–130 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Microespuma <b>0,5 cm</b></span></div>
         <p class="nota">Leche sedosa, brillante, sin espuma seca.</p></div>
-      <div class="card receta"><h3>Magic <span class="taza">~160 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#38200F"></i>Base</span><span>doble ristretto</span></li><li><span><i class="dot" style="background:#F1DFC2"></i>Leche texturizada</span><span>hasta llenar</span></li><li><span><i class="dot" style="background:#FBF4E4"></i>Microespuma</span><span>~0,5 cm</span></li></ul>
-          <div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:24%;background:#38200F"></div><div class="cup-layer" style="height:58%;background:#F1DFC2"></div><div class="cup-layer" style="height:9%;background:#FBF4E4"></div></div></div>
-        </div>
+      <div class="card receta"><h3>Magic</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:24%;background:#38200F"></div><div class="cup-layer" style="height:58%;background:#F1DFC2"></div><div class="cup-layer" style="height:9%;background:#FBF4E4"></div></div></div><div class="taza-ml">~160 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#38200F"></i>Base <b>doble ristretto</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>hasta llenar</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Microespuma <b>0,5 cm</b></span></div>
         <p class="nota">Un flat white con doble ristretto, servido en vasito de vidrio: más dulzor, menos volumen. El favorito de la casa.</p></div>
-      <div class="card receta"><h3>Latte <span class="taza">240 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#4A2C17"></i>Espresso</span><span>doble (36 g)</span></li><li><span><i class="dot" style="background:#F1DFC2"></i>Leche vaporizada</span><span>180–200 ml</span></li><li><span><i class="dot" style="background:#FBF4E4"></i>Espuma</span><span>~1 cm</span></li></ul>
-          <div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:20%;background:#4A2C17"></div><div class="cup-layer" style="height:60%;background:#F1DFC2"></div><div class="cup-layer" style="height:12%;background:#FBF4E4"></div></div></div>
-        </div></div>
-      <div class="card receta"><h3>Cappuccino <span class="taza">180 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#4A2C17"></i>Espresso</span><span>simple o doble</span></li><li><span><i class="dot" style="background:#F1DFC2"></i>Leche vaporizada</span><span>~100 ml</span></li><li><span><i class="dot" style="background:#FBF4E4"></i>Espuma</span><span>~2 cm (tercios)</span></li></ul>
-          <div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:28%;background:#4A2C17"></div><div class="cup-layer" style="height:32%;background:#F1DFC2"></div><div class="cup-layer" style="height:30%;background:#FBF4E4"></div></div><div class="cup-handle"></div></div>
-        </div></div>
-      <div class="card receta"><h3>Irish coffee <span class="taza">~200 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#B06F2B"></i>Whisky + azúcar</span><span>30–40 ml</span></li><li><span><i class="dot" style="background:#4A2C17"></i>Café (filtrado)</span><span>~120 ml</span></li><li><span><i class="dot" style="background:#FFF3D6"></i>Crema semibatida</span><span>encima</span></li></ul>
-          <div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:16%;background:#B06F2B"></div><div class="cup-layer" style="height:48%;background:#4A2C17"></div><div class="cup-layer" style="height:18%;background:#FFF3D6"></div></div></div>
-        </div>
+      <div class="card receta"><h3>Latte</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:20%;background:#4A2C17"></div><div class="cup-layer" style="height:60%;background:#F1DFC2"></div><div class="cup-layer" style="height:12%;background:#FBF4E4"></div></div></div><div class="taza-ml">240 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>180–200 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>1 cm</b></span></div></div>
+      <div class="card receta"><h3>Cappuccino</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:28%;background:#4A2C17"></div><div class="cup-layer" style="height:32%;background:#F1DFC2"></div><div class="cup-layer" style="height:30%;background:#FBF4E4"></div></div><div class="cup-handle"></div></div><div class="taza-ml">180 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>simple/doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>~100 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>2 cm, tercios</b></span></div></div>
+      <div class="card receta"><h3>Irish coffee</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:16%;background:#B06F2B"></div><div class="cup-layer" style="height:48%;background:#4A2C17"></div><div class="cup-layer" style="height:18%;background:#FFF3D6"></div></div></div><div class="taza-ml">~200 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#B06F2B"></i>Whisky + azúcar <b>30–40 ml</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Café filtrado <b>~120 ml</b></span><span class="ing"><i class="dot" style="background:#FFF3D6"></i>Crema <b>encima</b></span></div>
         <p class="nota">Verté la crema sobre el dorso de una cuchara para que flote. Vaso templado primero.</p></div>
-      <div class="card receta"><h3>Affogato <span class="taza">~120 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#F6ECD8"></i>Helado (vainilla)</span><span>1 bocha</span></li><li><span><i class="dot" style="background:#4A2C17"></i>Espresso caliente</span><span>simple o doble</span></li></ul>
-          <div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:48%;background:#F6ECD8"></div><div class="cup-layer" style="height:24%;background:#4A2C17"></div></div></div>
-        </div>
+      <div class="card receta"><h3>Affogato</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:48%;background:#F6ECD8"></div><div class="cup-layer" style="height:24%;background:#4A2C17"></div></div></div><div class="taza-ml">~120 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#F6ECD8"></i>Helado (vainilla) <b>1 bocha</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso caliente <b>simple/doble</b></span></div>
         <p class="nota">El contraste caliente-frío es el punto: espresso recién extraído, directo sobre el helado.</p></div>
-      <div class="card receta"><h3>Caramel macchiato <span class="taza">~240 ml</span></h3>
-        <div class="receta-body">
-          <ul><li><span><i class="dot" style="background:#C6862F"></i>Syrup</span><span>~15 ml</span></li><li><span><i class="dot" style="background:#F1DFC2"></i>Leche vaporizada</span><span>~180 ml</span></li><li><span><i class="dot" style="background:#FBF4E4"></i>Espuma</span><span>~1 cm</span></li><li><span><i class="dot" style="background:#4A2C17"></i>Espresso</span><span>"manchado" encima</span></li></ul>
-          <div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:9%;background:#C6862F"></div><div class="cup-layer" style="height:50%;background:#F1DFC2"></div><div class="cup-layer" style="height:11%;background:#4A2C17"></div><div class="cup-layer" style="height:14%;background:#FBF4E4"></div></div></div>
-        </div>
+      <div class="card receta"><h3>Caramel macchiato</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:9%;background:#C6862F"></div><div class="cup-layer" style="height:50%;background:#F1DFC2"></div><div class="cup-layer" style="height:11%;background:#4A2C17"></div><div class="cup-layer" style="height:14%;background:#FBF4E4"></div></div></div><div class="taza-ml">~240 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#C6862F"></i>Syrup <b>~15 ml</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>~180 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>1 cm</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>"manchado"</b></span></div>
         <p class="nota">Genérico adaptable: cambiá el syrup (vainilla, caramelo, avellana) y tenés toda la familia de macchiatos saborizados.</p></div>
     </div>
   </section>
@@ -714,6 +690,16 @@ function toggleTema(){
   localStorage.setItem('ch-tema', oscuro ? 'claro' : 'dark');
 }
 if(localStorage.getItem('ch-tema') === 'dark') document.documentElement.dataset.theme = 'dark';
+
+/* ================= nav auto-oculta al scrollear ================= */
+let navY = window.scrollY;
+window.addEventListener('scroll', ()=>{
+  const nav = document.querySelector('nav');
+  const y = window.scrollY;
+  if(y > navY + 6 && y > 60) nav.classList.add('nav-oculta');
+  else if(y < navY - 6) nav.classList.remove('nav-oculta');
+  navY = y;
+}, {passive:true});
 
 /* ================= exportar / importar ================= */
 function exportar(){
