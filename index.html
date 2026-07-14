@@ -2,726 +2,211 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>CoffeeHouse</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#F4EBDC">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoffeeHouse — Caso de estudio</title>
+<meta name="description" content="De un comentario al pasar a una app usada en producción: cómo se construyó CoffeeHouse, una bitácora de calibración de café.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Nunito+Sans:wght@400;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#F4EBDC;
-    --card:#FDF8EF;
-    --ink:#3A2A1E;
-    --ink-soft:#8A7360;
-    --line:#E4D4BD;
-    --olive:#6C7A44;
-    --olive-soft:#EDEFDC;
-    --brick:#B4552D;
-    --brick-soft:#F6E2D4;
-    --mostaza:#C08A2D;
-    --mostaza-soft:#F5E8C9;
-    --grey-soft:#EBE0CD;
-    --radius:12px;
-    --mono:'IBM Plex Mono', ui-monospace, monospace;
-    --display:'Bricolage Grotesque', 'Arial Black', sans-serif;
-    --sans:'Nunito Sans', system-ui, sans-serif;
+    --paper:#F4EBDC; --card:#FDF8EF; --ink:#3A2A1E; --ink-soft:#8A7360;
+    --line:#E4D4BD; --olive:#6C7A44; --brick:#B4552D; --mostaza:#C08A2D;
+    --dark:#211912; --dark-card:#2C2218; --dark-ink:#F2E7D5;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --display:'Bricolage Grotesque','Arial Black',sans-serif;
+    --sans:'Nunito Sans',system-ui,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:900px;margin:0 auto;padding:0 calc(16px + env(safe-area-inset-right)) 60px calc(16px + env(safe-area-inset-left))}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+  a{color:var(--brick);text-decoration:none;font-weight:700}
+  a:hover{text-decoration:underline}
 
-  header{padding:14px 0 4px}
-  .hdr-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  header h1{font-family:var(--display);font-weight:800;font-size:clamp(22px,3.5vw,28px);letter-spacing:-.01em;line-height:1.05}
-  header h1 .acc{color:var(--brick)}
-  .hdr-corner{display:flex;gap:8px;align-items:center;position:relative}
-  .btn-icon{border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);border-radius:999px;width:38px;height:38px;font-size:15px;cursor:pointer;line-height:1}
-  .btn-icon:hover{color:var(--ink)}
-  #datosMenu{position:absolute;top:44px;right:0;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:8px;display:none;flex-direction:column;gap:6px;z-index:20;box-shadow:0 4px 14px rgba(0,0,0,.25)}
-  #datosMenu.open{display:flex}
-  #saveState{font-family:var(--mono);font-size:11px;color:var(--olive);min-height:13px;transition:opacity .4s}
+  /* hero oscuro, modo barra */
+  .hero{background:var(--dark);color:var(--dark-ink);padding:70px 0 60px;text-align:center}
+  .hero .squiggle{margin:0 auto 22px}
+  .hero h1{font-family:var(--display);font-weight:800;font-size:clamp(38px,8vw,64px);line-height:1;letter-spacing:-.02em}
+  .hero h1 .acc{color:var(--brick)}
+  .hero .tag{font-size:clamp(17px,3vw,21px);color:var(--dark-ink);opacity:.82;margin-top:16px;font-weight:600}
+  .hero .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--mostaza);margin-bottom:20px}
+  .hero-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+  .hlink{border:1.5px solid #4A3A29;color:var(--dark-ink);padding:11px 20px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:15px;transition:background .15s}
+  .hlink:hover{background:#392f21;text-decoration:none}
+  .hlink.solid{background:var(--brick);border-color:var(--brick)}
 
-  nav{display:flex;gap:5px;margin:16px 0 20px;background:var(--grey-soft);padding:5px;border-radius:999px;position:sticky;top:8px;z-index:5}
-  nav button{flex:1;border:0;background:transparent;font-family:var(--display);font-weight:700;font-size:14.5px;color:var(--ink-soft);padding:10px 6px;border-radius:999px;cursor:pointer;transition:background .15s,color .15s}
-  nav{transition:transform .25s ease}
-  nav.nav-oculta{transform:translateY(-140%)}
-  nav button.active{background:var(--card);color:var(--brick);box-shadow:0 1px 3px rgba(58,42,30,.14)}
-  nav button:focus-visible{outline:2px solid var(--olive);outline-offset:2px}
+  .meta{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;margin-top:38px;font-size:13.5px}
+  .meta div{text-align:left}
+  .meta .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mostaza);margin-bottom:2px}
+  .meta .v{color:var(--dark-ink);font-weight:600;opacity:.9}
 
-  /* layout compacto para teléfono apaisado (Moto G100 horizontal) */
-  @media (orientation:landscape) and (max-height:560px){
-    header{padding:8px 0 2px}
-    header h1{font-size:21px}
-    nav{margin:8px 0 12px;top:4px}
-    nav button{padding:6px 6px;font-size:13.5px}
-    .card{padding:14px}
-    .timer-big{font-size:54px;margin:2px 0}
-    .wrap{padding-bottom:24px}
-  }
+  section{padding:52px 0}
+  section+section{border-top:1px solid var(--line)}
+  h2{font-family:var(--display);font-weight:800;font-size:clamp(24px,4vw,32px);letter-spacing:-.01em;margin-bottom:6px}
+  h2 .num{color:var(--mostaza);font-family:var(--mono);font-size:.6em;font-weight:600;margin-right:12px;vertical-align:middle}
+  h3{font-family:var(--display);font-weight:700;font-size:20px;margin:28px 0 8px}
+  p{margin-bottom:16px}
+  p.lead{font-size:19px;color:var(--ink)}
+  .soft{color:var(--ink-soft)}
 
-  .tab{display:none}.tab.active{display:block}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:14px}
-  h2{font-family:var(--display);font-weight:800;font-size:21px;margin-bottom:10px}
-  h3{font-family:var(--display);font-weight:700;font-size:16px;margin-bottom:6px}
-  .muted{color:var(--ink-soft);font-size:13px}
+  figure{margin:28px 0}
+  figure img{width:100%;border-radius:14px;border:1px solid var(--line);display:block}
+  figcaption{font-size:13.5px;color:var(--ink-soft);margin-top:10px;text-align:center;font-style:italic}
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .duo img{width:100%;border-radius:12px;border:1px solid var(--line);display:block}
+  @media(max-width:560px){.duo{grid-template-columns:1fr}}
 
-  /* ---------- formularios ---------- */
-  label{display:block;font-size:11.5px;font-weight:800;color:var(--ink-soft);margin:10px 0 3px;text-transform:uppercase;letter-spacing:.05em}
-  input,select,textarea{width:100%;border:1.5px solid var(--line);border-radius:9px;background:#fff;padding:9px 10px;font-family:var(--sans);font-weight:600;font-size:15px;color:var(--ink)}
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--olive);outline-offset:0;border-color:var(--olive)}
-  textarea{resize:vertical;min-height:54px}
-  .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-  @media(max-width:480px){.row{grid-template-columns:1fr 1fr}}
-  .btn{border:0;border-radius:999px;padding:10px 18px;font-family:var(--display);font-weight:700;font-size:14px;cursor:pointer;transition:filter .15s}
-  .btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-  .btn-primary{background:var(--brick);color:var(--card)}
-  .btn-primary:hover{filter:brightness(1.12)}
-  .btn-ghost{background:transparent;color:var(--ink-soft);border:1.5px solid var(--line)}
-  .btn-ghost:hover{color:var(--ink)}
-  .btn-sm{padding:6px 12px;font-size:12px}
-  .check{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px}
-  .check input{width:auto;accent-color:var(--olive)}
+  blockquote{border-left:4px solid var(--mostaza);padding:4px 0 4px 20px;margin:22px 0;font-size:18px;color:var(--ink);font-style:italic}
 
-  /* rueda de molienda 0–30 */
-  .rueda{display:flex;align-items:center;gap:12px}
-  .rueda input[type=range]{flex:1;accent-color:var(--brick);padding:0;border:0;background:transparent;height:28px}
-  .rueda-val{font-family:var(--mono);font-weight:600;font-size:20px;background:var(--mostaza-soft);color:var(--ink);border:1.5px solid var(--mostaza);border-radius:9px;min-width:48px;text-align:center;padding:4px 6px}
+  .pill{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:13px;font-weight:700;margin:3px 4px 3px 0}
+  .pill .d{color:var(--mostaza)}
 
-  /* ---------- café card ---------- */
-  .cafe-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-  .cafe-head:focus-visible{outline:2px solid var(--olive);outline-offset:4px}
-  .cafe-name{font-family:var(--display);font-weight:800;font-size:20px}
-  .cafe-detail{color:var(--ink-soft);font-size:13px;margin-top:1px;font-weight:600}
-  .chevron{font-family:var(--mono);color:var(--ink-soft);font-size:14px;padding-top:4px;transition:transform .2s}
-  .open .chevron{transform:rotate(90deg)}
-  .perfil{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-  .chip{display:inline-block;border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:800}
-  .chip-acidez{background:var(--mostaza-soft);color:var(--mostaza)}
-  .chip-amargor{background:var(--brick-soft);color:var(--brick)}
-  .chip-cuerpo{background:var(--olive-soft);color:var(--olive)}
+  /* timeline de versiones */
+  .ver{border-left:2px solid var(--line);padding:0 0 4px 22px;margin-left:8px}
+  .vrow{position:relative;padding:14px 0}
+  .vrow::before{content:'';position:absolute;left:-29px;top:20px;width:12px;height:12px;border-radius:50%;background:var(--brick);border:3px solid var(--paper)}
+  .vrow .vt{font-family:var(--mono);font-size:12px;color:var(--mostaza);font-weight:600}
+  .vrow .vh{font-family:var(--display);font-weight:700;font-size:17px;margin:2px 0 3px}
 
-  /* diales de calibre */
-  .dials{display:flex;gap:14px;margin-top:14px;flex-wrap:wrap}
-  .dial{display:flex;align-items:center;gap:10px;background:var(--paper);border:1.5px solid var(--line);border-radius:var(--radius);padding:10px 14px;min-width:160px;flex:1}
-  .dial-knob{width:54px;height:54px;border-radius:50%;border:2.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:18px;background:#fff;color:var(--ink-soft);flex-shrink:0}
-  .dial.set .dial-knob{border-color:var(--olive);color:var(--ink);background:var(--olive-soft)}
-  .dial-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
-  .dial-meta{font-family:var(--mono);font-size:12px;color:var(--ink);margin-top:2px}
-  .dial.unset .dial-meta{color:var(--ink-soft);font-family:var(--sans);font-style:italic}
+  /* tarjetas de lección */
+  .lessons{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+  @media(max-width:560px){.lessons{grid-template-columns:1fr}}
+  .lesson{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .lesson h4{font-family:var(--display);font-weight:700;font-size:16px;margin-bottom:5px}
+  .lesson p{font-size:14.5px;color:var(--ink-soft);margin:0}
 
-  .cafe-body{display:none;margin-top:6px}
-  .open .cafe-body{display:block}
-  .divider{border:0;border-top:1.5px dashed var(--line);margin:16px 0}
+  .stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 
-  /* pruebas */
-  .prueba{border:1.5px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px;background:#fff}
-  .prueba-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}
-  .prueba-fecha{font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
-  .chip-metodo{background:var(--grey-soft);color:var(--ink)}
-  .chip-ok{background:var(--olive-soft);color:var(--olive)}
-  .chip-amargo{background:var(--brick-soft);color:var(--brick)}
-  .chip-acido{background:var(--mostaza-soft);color:var(--mostaza)}
-  .chip-otro{background:var(--grey-soft);color:var(--ink-soft)}
-  .chip-cal{background:var(--olive);color:#fff}
-  .prueba-datos{font-family:var(--mono);font-size:13px;margin-top:7px;display:flex;gap:14px;flex-wrap:wrap}
-  .prueba-datos b{font-weight:600}
-  .prueba-coment{font-size:13.5px;color:var(--ink-soft);margin-top:6px;font-weight:600}
-  .prueba-actions{display:flex;gap:8px;margin-top:10px}
-
-  .empty{text-align:center;padding:36px 16px;color:var(--ink-soft);font-weight:600;flex:0 0 100%}
-  .empty .icon{font-size:32px;margin-bottom:8px}
-
-  /* ---------- estándares ---------- */
-  .spec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:10px;margin-top:10px}
-  .spec{background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px}
-  .spec .k{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
-  .spec .v{font-family:var(--mono);font-weight:600;font-size:15px;margin-top:3px}
-  .ajuste{display:grid;gap:8px;margin-top:10px}
-  .ajuste-item{display:flex;gap:10px;align-items:baseline;border-left:4px solid var(--line);padding:6px 0 6px 12px;font-size:14px}
-  .ajuste-item.amargo{border-color:var(--brick)}
-  .ajuste-item.acido{border-color:var(--mostaza)}
-  .ajuste-item.flojo{border-color:var(--ink-soft)}
-  .ajuste-item b{min-width:130px;flex-shrink:0}
-
-  /* ---------- preparaciones: carrusel deslizable ---------- */
-  .prep-hint{font-size:12px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
-  .h-scroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;padding:2px 2px 10px;-webkit-overflow-scrolling:touch;align-items:stretch;scrollbar-width:thin;scrollbar-color:var(--mostaza) var(--grey-soft);cursor:grab;margin-bottom:14px}
-  .h-scroll.dragging{cursor:grabbing;scroll-snap-type:none}
-  .h-scroll::-webkit-scrollbar{height:9px}
-  .h-scroll::-webkit-scrollbar-track{background:var(--grey-soft);border-radius:99px}
-  .h-scroll::-webkit-scrollbar-thumb{background:var(--mostaza);border-radius:99px}
-  .h-scroll>.card{scroll-snap-align:start;margin-bottom:0}
-  .card.cafe{flex:0 0 100%;display:flex;flex-direction:column}
-  .cafe .row{grid-template-columns:1fr 1fr 1fr}
-  .cafe-foot{margin-top:auto;padding-top:12px}
-  .ultima{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-top:10px}
-  .card.add{flex:0 0 110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:var(--ink-soft);border-style:dashed;min-height:170px}
-  .card.add:hover{color:var(--ink)}
-  .card.add .plus{font-size:32px;font-family:var(--display);font-weight:800;line-height:1}
-  .card.add span{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;text-align:center}
-  .cafe-mid{display:flex;gap:14px;margin-top:12px;align-items:stretch;flex-wrap:wrap}
-  .cafe-mid .dials{margin-top:0;flex:1 1 300px}
-  .notas{flex:1 1 260px;border:1.5px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--ink-soft);cursor:pointer;font-weight:600}
-  .notas-t{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;color:var(--mostaza)}
-  .std-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
-  @media(max-width:700px){.std-grid{grid-template-columns:1fr}}
-  .std .spec-grid{grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px;margin-top:8px}
-  .std .spec{padding:7px 9px}
-  .std .spec .v{font-size:13px}
-  .std h2{font-size:18px}
-  .std .muted{font-size:12px}
-  .std .ajuste-item{font-size:12.5px;padding:4px 0 4px 10px}
-  .std .ajuste-item b{min-width:104px}
-  .std .divider{margin:10px 0}
-  .receta{scroll-snap-align:start;flex:0 0 400px;margin-bottom:0;display:flex;flex-direction:column}
-  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;border:1px solid rgba(58,42,30,.25);flex-shrink:0}
-  .cup-outer{position:relative;flex-shrink:0;margin:2px 0 0}
-  .cup{border:3px solid var(--ink);background:linear-gradient(#fff,#FDF8EF);display:flex;flex-direction:column-reverse;overflow:hidden}
-  .cup.taza{width:78px;height:50px;border-radius:6px 6px 30px 30px}
-  .cup.vaso{width:48px;height:62px;border-radius:4px 4px 10px 10px}
-  .cup.alto{width:44px;height:80px;border-radius:4px 4px 10px 10px}
-  .cup-handle{position:absolute;right:-12px;top:9px;width:14px;height:22px;border:3px solid var(--ink);border-left:0;border-radius:0 10px 10px 0}
-  .cup-outer::after{content:'';display:block;margin:3px auto 0;height:6px;border-radius:99px;background:var(--line);width:90%}
-  .cup-layer{width:100%;flex-shrink:0}
-  .receta h3{font-size:17px}
-  .receta-top{display:flex;flex-direction:column;align-items:center;margin:8px 0 12px}
-  .taza-ml{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-top:8px}
-  .ing-line{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;font-size:13.5px;font-weight:600;padding:0 4px}
-  .ing{white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
-  .ing b{font-family:var(--mono);font-size:12.5px;font-weight:600}
-  .receta .nota{font-size:12px;color:var(--ink-soft);margin-top:auto;padding-top:8px;font-style:italic;font-weight:600}
-
-  [data-theme="dark"]{
-    --paper:#211912; --card:#2C2218; --ink:#F2E7D5; --ink-soft:#B7A18B;
-    --line:#4A3A29; --grey-soft:#3B2F21; --olive-soft:#39412A;
-    --brick-soft:#4C2F1F; --mostaza-soft:#4A3A1C;
-  }
-  [data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#241C13;color:var(--ink)}
-  [data-theme="dark"] .dial-knob,[data-theme="dark"] .prueba{background:#241C13}
-  .timer-big{font-family:var(--mono);font-weight:600;font-size:clamp(60px,16vw,110px);line-height:1.1;margin:8px 0 4px}
-  .timer-big.done{color:var(--brick)}
-  .timer-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
-  #timerBadge{font-size:11px;color:var(--brick);font-family:var(--mono)}
-  @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+  footer{background:var(--dark);color:var(--dark-ink);text-align:center;padding:44px 22px}
+  footer p{opacity:.7;font-size:14px;margin:0}
+  footer .big{font-family:var(--display);font-weight:800;font-size:22px;opacity:1;margin-bottom:8px}
+  footer a{color:var(--mostaza)}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header>
-    <div class="hdr-row">
-      <h1>Coffee<span class="acc">House</span></h1>
-      <div class="hdr-corner">
-        <button class="btn-icon" onclick="toggleTema()" title="Modo barra" aria-label="Alternar modo barra">🌙</button>
-        <button class="btn-icon" onclick="toggleDatos()" title="Datos" aria-label="Exportar o importar datos">⇅</button>
-        <div id="datosMenu">
-          <button class="btn btn-ghost btn-sm" onclick="exportar();toggleDatos()">⇪ Exportar</button>
-          <button class="btn btn-ghost btn-sm" onclick="importar();toggleDatos()">⇩ Importar</button>
-        </div>
-      </div>
+<div class="hero">
+  <div class="wrap">
+    <svg class="squiggle" width="130" height="11" viewBox="0 0 130 11" aria-hidden="true"><path d="M2 6 Q13 1,24 6 T46 6 T68 6 T90 6 T112 6 T128 6" stroke="#C08A2D" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+    <div class="kicker">Caso de estudio · Producto & ejecución</div>
+    <h1>Coffee<span class="acc">House</span></h1>
+    <p class="tag">De un comentario al pasar a una app usada todos los días en la barra de casa.</p>
+    <div class="hero-links">
+      <a class="hlink solid" href="#historia">Ver el proceso ↓</a>
+      <a class="hlink" href="#" data-app>Abrir la app</a>
+      <a class="hlink" href="#" data-repo>Código</a>
     </div>
-    <div id="saveState"></div>
-  </header>
-
-  <nav>
-    <button class="active" data-tab="cafes">Mis cafés</button>
-    <button data-tab="estandares">Estándares</button>
-    <button data-tab="preparaciones">Preparaciones</button>
-    <button data-tab="timer">Timer <span id="timerBadge"></span></button>
-  </nav>
-
-  <!-- ============ TAB CAFÉS ============ -->
-  <section id="tab-cafes" class="tab active">
-    <div id="listaCafes" class="h-scroll"></div>
-    <div class="card" id="nvCard" style="display:none;margin-top:12px">
-      <h2>Nueva variedad</h2>
-      <label for="nvNombre">Variedad</label>
-      <input id="nvNombre" placeholder="Ej: Colombia Huila — Tostadero X">
-      <div class="row">
-        <div><label for="nvAcidez">Acidez</label>
-          <select id="nvAcidez"><option value="">—</option><option>Alta</option><option>Media</option><option>Baja</option></select></div>
-        <div><label for="nvAmargor">Amargor</label>
-          <select id="nvAmargor"><option value="">—</option><option>Fuerte</option><option>Medio</option><option>Suave</option><option>Dulce</option></select></div>
-        <div><label for="nvCuerpo">Cuerpo</label>
-          <select id="nvCuerpo"><option value="">—</option><option>Cremoso</option><option>Medio</option><option>Ligero</option></select></div>
-      </div>
-      <label for="nvDetalle">Detalle (opcional)</label>
-      <input id="nvDetalle" placeholder="Tueste, notas del paquete, fecha de compra…">
-      <div style="margin-top:14px">
-        <button class="btn btn-primary" onclick="agregarCafe()">Agregar café</button>
-      </div>
+    <div class="meta">
+      <div><div class="k">Rol</div><div class="v">Diseño, especificación y dirección</div></div>
+      <div><div class="k">Tiempo</div><div class="v">~4 días · sesiones cortas</div></div>
+      <div><div class="k">Stack</div><div class="v">HTML · JS · PWA · localStorage</div></div>
+      <div><div class="k">Estado</div><div class="v">En producción, uso diario</div></div>
     </div>
-  </section>
-
-  <!-- ============ TAB ESTÁNDARES ============ -->
-  <section id="tab-estandares" class="tab">
-    <div class="std-grid">
-    <div class="card std">
-      <h2>Espresso</h2>
-      <p class="muted">Base doble, la referencia para arrancar toda calibración.</p>
-      <div class="spec-grid">
-        <div class="spec"><div class="k">Dosis</div><div class="v">18 g</div></div>
-        <div class="spec"><div class="k">Bebida</div><div class="v">36 g (1:2)</div></div>
-        <div class="spec"><div class="k">Tiempo</div><div class="v">25–30 s</div></div>
-        <div class="spec"><div class="k">Molienda</div><div class="v">Fina</div></div>
-        <div class="spec"><div class="k">Agua</div><div class="v">92–94 °C</div></div>
-      </div>
-      <hr class="divider">
-      <h3>Guía de ajuste al paladar</h3>
-      <div class="ajuste">
-        <div class="ajuste-item amargo"><b>Amargo / quemado</b><span>Sobreextracción → molienda más <b>gruesa</b> (subí números en la rueda), o cortá antes la extracción.</span></div>
-        <div class="ajuste-item acido"><b>Ácido / punzante</b><span>Subextracción → molienda más <b>fina</b> (bajá números), o dejá correr un poco más.</span></div>
-        <div class="ajuste-item flojo"><b>Aguado / flojo</b><span>Subí la dosis o bajá el ratio (menos bebida para los mismos gramos).</span></div>
-      </div>
-    </div>
-
-    <div class="card std">
-      <h2>Prensa francesa</h2>
-      <p class="muted">Inmersión total: acá manda el tiempo, no la presión.</p>
-      <div class="spec-grid">
-        <div class="spec"><div class="k">Ratio</div><div class="v">1:15</div></div>
-        <div class="spec"><div class="k">Ejemplo</div><div class="v">30 g / 450 ml</div></div>
-        <div class="spec"><div class="k">Infusión</div><div class="v">4 min</div></div>
-        <div class="spec"><div class="k">Molienda</div><div class="v">Gruesa</div></div>
-        <div class="spec"><div class="k">Agua</div><div class="v">93–96 °C</div></div>
-      </div>
-      <p class="muted" style="margin-top:10px">A los 4 minutos: rompé la costra, retirá la espuma superficial, bajá el émbolo despacio y serví sin apurar el fondo (ahí queda el sedimento amargo).</p>
-      <hr class="divider">
-      <h3>Guía de ajuste al paladar</h3>
-      <div class="ajuste">
-        <div class="ajuste-item amargo"><b>Amargo / turbio</b><span>Molienda más <b>gruesa</b> o menos tiempo de infusión (probá 3:30).</span></div>
-        <div class="ajuste-item acido"><b>Ácido / flojo</b><span>Molienda un poco más fina o estirá la infusión a 4:30–5:00.</span></div>
-        <div class="ajuste-item flojo"><b>Aguado</b><span>Ajustá el ratio a 1:14 o incluso 1:13.</span></div>
-      </div>
-    </div>
-    </div>
-  </section>
-
-  <!-- ============ TAB PREPARACIONES ============ -->
-  <section id="tab-preparaciones" class="tab">
-    <p class="muted" style="margin-bottom:8px">Medidas base: espresso simple 9 g → 18 g · doble 18 g → 36 g. Ajustá a tu calibre de cada variedad.</p>
-    <div class="h-scroll">
-      <div class="card receta"><h3>Espresso</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:38%;background:#4A2C17"></div></div><div class="cup-handle"></div></div><div class="taza-ml">60–70 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Café <b>18 g → 36 g</b></span><span class="ing">Tiempo <b>25–30 s</b></span></div></div>
-      <div class="card receta"><h3>Ristretto</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:28%;background:#38200F"></div></div><div class="cup-handle"></div></div><div class="taza-ml">60 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#38200F"></i>Café <b>18 g → 22–27 g</b></span><span class="ing">Ratio <b>1:1–1:1,5</b></span><span class="ing">Tiempo <b>~20 s</b></span></div>
-        <p class="nota">Espresso "restringido": puede ser simple o doble, pero en especialidad se tira casi siempre doble (como acá). Base ideal del magic.</p></div>
-      <div class="card receta"><h3>Americano</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:32%;background:#4A2C17"></div><div class="cup-layer" style="height:44%;background:#C7E0E4"></div></div><div class="cup-handle"></div></div><div class="taza-ml">180 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble</b></span><span class="ing"><i class="dot" style="background:#C7E0E4"></i>Agua caliente <b>90–120 ml</b></span></div>
-        <p class="nota">Espresso primero, agua encima. Más suave y diluido.</p></div>
-      <div class="card receta"><h3>Long black</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:44%;background:#C7E0E4"></div><div class="cup-layer" style="height:30%;background:#4A2C17"></div></div><div class="cup-handle"></div></div><div class="taza-ml">120–160 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#C7E0E4"></i>Agua <b>90–120 ml</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble encima</b></span></div>
-        <p class="nota">Agua primero, espresso encima: conserva la crema. Más intenso que el americano.</p></div>
-      <div class="card receta"><h3>Cortado</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:34%;background:#4A2C17"></div><div class="cup-layer" style="height:34%;background:#F1DFC2"></div><div class="cup-layer" style="height:6%;background:#FBF4E4"></div></div></div><div class="taza-ml">90 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>simple/doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>1:1 (~40 ml)</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>mínima</b></span></div>
-        <p class="nota">En vasito de vidrio, como corresponde.</p></div>
-      <div class="card receta"><h3>Flat white</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:26%;background:#4A2C17"></div><div class="cup-layer" style="height:56%;background:#F1DFC2"></div><div class="cup-layer" style="height:9%;background:#FBF4E4"></div></div><div class="cup-handle"></div></div><div class="taza-ml">160–180 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>110–130 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Microespuma <b>0,5 cm</b></span></div>
-        <p class="nota">Leche sedosa, brillante, sin espuma seca.</p></div>
-      <div class="card receta"><h3>Magic</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:24%;background:#38200F"></div><div class="cup-layer" style="height:58%;background:#F1DFC2"></div><div class="cup-layer" style="height:9%;background:#FBF4E4"></div></div></div><div class="taza-ml">~160 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#38200F"></i>Base <b>doble ristretto</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>hasta llenar</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Microespuma <b>0,5 cm</b></span></div>
-        <p class="nota">Un flat white con doble ristretto, servido en vasito de vidrio: más dulzor, menos volumen. El favorito de la casa.</p></div>
-      <div class="card receta"><h3>Latte</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:20%;background:#4A2C17"></div><div class="cup-layer" style="height:60%;background:#F1DFC2"></div><div class="cup-layer" style="height:12%;background:#FBF4E4"></div></div></div><div class="taza-ml">240 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>180–200 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>1 cm</b></span></div></div>
-      <div class="card receta"><h3>Cappuccino</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:28%;background:#4A2C17"></div><div class="cup-layer" style="height:32%;background:#F1DFC2"></div><div class="cup-layer" style="height:30%;background:#FBF4E4"></div></div><div class="cup-handle"></div></div><div class="taza-ml">180 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>simple/doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>~100 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>2 cm, tercios</b></span></div></div>
-      <div class="card receta"><h3>Irish coffee</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:16%;background:#B06F2B"></div><div class="cup-layer" style="height:48%;background:#4A2C17"></div><div class="cup-layer" style="height:18%;background:#FFF3D6"></div></div></div><div class="taza-ml">~200 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#B06F2B"></i>Whisky + azúcar <b>30–40 ml</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Café filtrado <b>~120 ml</b></span><span class="ing"><i class="dot" style="background:#FFF3D6"></i>Crema <b>encima</b></span></div>
-        <p class="nota">Verté la crema sobre el dorso de una cuchara para que flote. Vaso templado primero.</p></div>
-      <div class="card receta"><h3>Affogato</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:48%;background:#F6ECD8"></div><div class="cup-layer" style="height:24%;background:#4A2C17"></div></div></div><div class="taza-ml">~120 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#F6ECD8"></i>Helado (vainilla) <b>1 bocha</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso caliente <b>simple/doble</b></span></div>
-        <p class="nota">El contraste caliente-frío es el punto: espresso recién extraído, directo sobre el helado.</p></div>
-      <div class="card receta"><h3>Caramel macchiato</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:9%;background:#C6862F"></div><div class="cup-layer" style="height:50%;background:#F1DFC2"></div><div class="cup-layer" style="height:11%;background:#4A2C17"></div><div class="cup-layer" style="height:14%;background:#FBF4E4"></div></div></div><div class="taza-ml">~240 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#C6862F"></i>Syrup <b>~15 ml</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>~180 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>1 cm</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>"manchado"</b></span></div>
-        <p class="nota">Genérico adaptable: cambiá el syrup (vainilla, caramelo, avellana) y tenés toda la familia de macchiatos saborizados.</p></div>
-    </div>
-  </section>
-
-  <!-- ============ TAB TIMER ============ -->
-  <section id="tab-timer" class="tab">
-    <div class="card" style="text-align:center">
-      <h2>Timer de preparación</h2>
-      <div class="timer-big" id="timerDisplay">0:00</div>
-      <p class="muted">La pantalla queda encendida mientras corre. Si igual se suspende, el conteo sigue: al despertar se recalcula y al terminar suena, vibra y notifica.</p>
-      <div class="timer-actions">
-        <button class="btn btn-primary" onclick="setTimer(30)">▶ Espresso · 30 s</button>
-        <button class="btn btn-primary" onclick="setTimer(240)">▶ Prensa · 4:00</button>
-        <button class="btn btn-ghost" onclick="addTimer(5)">+5 s</button>
-        <button class="btn btn-ghost" onclick="addTimer(-5)">−5 s</button>
-        <button class="btn btn-ghost" onclick="stopTimer()">■ Detener</button>
-      </div>
-    </div>
-  </section>
-
+  </div>
 </div>
 
+<section id="historia">
+  <div class="wrap">
+    <h2><span class="num">01</span>El problema</h2>
+    <p class="lead">Tengo una estación de espresso en casa y un molinillo con 30 niveles. Cada café nuevo necesita calibrarse —molienda, dosis, rendimiento, tiempo— y una vez que encontrás el punto, hay que <em>recordarlo</em>. Lo llevaba en la cabeza y en notas sueltas que nunca encontraba.</p>
+    <p>La idea nació de la forma menos épica posible: esperando que se renovara un límite de tokens de Claude, parado frente a la barra, pensé "tengo un celular Android sin usar y un problema que registrar". No arranqué queriendo <em>hacer una app</em>. Arranqué con un problema real y molesto.</p>
+    <figure>
+      <img src="img/barra-antes.jpg" alt="La barra de café antes, sin la app">
+      <figcaption>El punto de partida: la barra, el molinillo de 30 pasos, y ningún registro de nada.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2><span class="num">02</span>Cómo trabajé</h2>
+    <p>No escribo código. Todo el proyecto se construyó dirigiendo a una IA: mi trabajo fue <strong>especificar bien, iterar sobre lo que volvía, y decidir qué estaba bien resuelto y qué no</strong>. Es más parecido a hacer de product manager que de programador — y ahí mi ventaja no era técnica sino de dominio: sé de café, así que podía detectar cuándo el contenido estaba mal.</p>
+    <p>Cada sesión empezaba con diez minutos de especificación escrita antes de pedir nada. Ese paso —no el prompt— es donde está el verdadero trabajo. La primera spec ya reveló dos supuestos escondidos:</p>
+    <blockquote>En una iteración se me escapó un "obviamente los gramos" pero no era obvio: ¿los de café molido o los de bebida extraída? Resultó que hacían falta ambos, porque juntos habilitan el cálculo del ratio que necesita un espresso perfecto.</blockquote>
+    <p>El segundo supuesto: la molienda no es un dato por café, es un dato <em>por café y por método</em> —el mismo grano se muele fino para espresso y grueso para prensa. Descubrir eso temprano evitó rehacer la estructura después.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2><span class="num">03</span>Cómo evolucionó</h2>
+    <p>Cuatro versiones, cada una empujada por feedback de uso real, no por un plan cerrado de entrada.</p>
+    <div class="ver">
+      <div class="vrow"><div class="vt">v1</div><div class="vh">Estructura y persistencia</div><p class="soft" style="margin:0">Tres secciones —registro, estándares, recetas— y datos que sobreviven entre sesiones.</p></div>
+      <div class="vrow"><div class="vt">v2</div><div class="vh">Identidad y contexto de uso</div><p class="soft" style="margin:0">Al definir que viviría en un teléfono apaisado montado en la pared, decisiones "estéticas" se volvieron funcionales: tarjetas deslizables, rueda de molienda que imita el dial físico, paleta que dialoga con la pared verde.</p></div>
+      <div class="vrow"><div class="vt">v3</div><div class="vh">Kiosk real</div><p class="soft" style="margin:0">PWA instalable, funciona sin conexión, timer que sobrevive la suspensión del teléfono, modo oscuro para la noche. Publicada por mí en GitHub Pages.</p></div>
+      <div class="vrow"><div class="vt">v4</div><div class="vh">Ajustes de uso en producción</div><p class="soft" style="margin:0">Layout reorganizado, navegación que se oculta al scrollear, orientación libre para escribir cómodo. Todo detectado usándola de verdad.</p></div>
+    </div>
+    <div class="duo" style="margin-top:28px">
+      <img src="img/pantalla-cafes.jpg" alt="Pantalla de registro de cafés">
+      <img src="img/pantalla-timer.jpg" alt="Pantalla del timer">
+    </div>
+    <figcaption>Registro de calibración por variedad y timer de preparación, en modo barra.</figcaption>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2><span class="num">04</span>Decisiones de producto</h2>
+    <p>Construir no fue lo difícil; decidir <em>qué</em> construir y qué dejar afuera, sí. Dos ejemplos:</p>
+    <h3>Distinguir evolución de "scope creep"</h3>
+    <p>La app terminó siendo mucho más que la idea original, pero creció por capas que el uso validaba, nunca por sumarle features sin sentido. Las ideas grandes que aparecían —un modo guiado paso a paso de cada preparación, por ejemplo— se guardaban en un banco de ideas para madurar, en vez de inflar la versión en curso.</p>
+    <h3>El experto de dominio es el control de calidad</h3>
+    <p>En una iteración, la IA describió mal la diferencia entre un americano y un long black. Yo la sabía; la corregí. Cuando dirigís IA para generar contenido especializado, tu criterio no es opcional: es la última línea de defensa contra lo que suena bien pero está mal.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2><span class="num">05</span>El resultado</h2>
+    <p class="lead">CoffeeHouse vive hoy en un Moto G100 restaurado, montado en la barra, con su propia cuenta y su identidad visual. La uso todos los días.</p>
+    <figure>
+      <img src="img/pared-cafes.jpg" alt="La app instalada en la barra, mostrando una variedad con su perfil de cata">
+      <figcaption>En producción: variedad nueva con su perfil de cata cargado, lista para calibrar. En modo barra, la pantalla se funde con la pared.</figcaption>
+    </figure>
+    <p>La primera calibración real fue un magic: molienda demasiado fina, apenas 12,7 g extraídos en 25 segundos. Salió desbalanceado —pero quedó <em>registrado</em>, con la nota de qué probar la próxima vez. Ese bucle —hipótesis, prueba, registro, ajuste— es exactamente para lo que existe la app. Funcionó calibrándola mientras calibraba el café.</p>
+    <figure>
+      <img src="img/pared-timer.jpg" alt="El timer de la app, listo en la barra">
+      <figcaption>El timer, a mano durante la extracción. La estación además quedó conectada a asistente de voz y a una rutina de música de barista.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2><span class="num">06</span>Qué me llevo</h2>
+    <div class="lessons">
+      <div class="lesson"><h4>El contexto de uso es parte de la spec</h4><p>"Se usa en un teléfono apaisado en la pared" convirtió decisiones de estilo en decisiones funcionales.</p></div>
+      <div class="lesson"><h4>Lo "obvio" esconde supuestos</h4><p>Cada palabra dada por sentada en una especificación es una decisión sin tomar.</p></div>
+      <div class="lesson"><h4>Terminar &gt; ser ambicioso</h4><p>Una app chica usada todos los días enseña más que una grande abandonada.</p></div>
+      <div class="lesson"><h4>Criticar la causa, no el síntoma</h4><p>"Quedó como una tabla apretada" permite arreglar la estructura; "está feo" no.</p></div>
+    </div>
+    <h3 style="margin-top:34px">Stack y técnicas</h3>
+    <div class="stack">
+      <span class="pill"><span class="d">·</span> HTML + JS sin frameworks</span>
+      <span class="pill"><span class="d">·</span> PWA instalable</span>
+      <span class="pill"><span class="d">·</span> localStorage</span>
+      <span class="pill"><span class="d">·</span> Service worker / offline</span>
+      <span class="pill"><span class="d">·</span> Wake Lock API</span>
+      <span class="pill"><span class="d">·</span> Timer por timestamp</span>
+      <span class="pill"><span class="d">·</span> GitHub Pages</span>
+      <span class="pill"><span class="d">·</span> Diseño responsive</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="big">CoffeeHouse</p>
+  <p>Un proyecto de vibecoding — idea, especificación y dirección de <strong>Germán</strong>.</p>
+  <p style="margin-top:10px"><a href="#" data-app>Abrir la app</a> &nbsp;·&nbsp; <a href="#" data-repo>Ver el código</a></p>
+</footer>
+
 <script>
-/* ================= estado y persistencia ================= */
-const KEY = 'bitacora-cafe';
-let data = { cafes: [] };
-const abiertos = new Set();
-
-async function cargar(){
-  try{
-    const v = localStorage.getItem(KEY);
-    if(v) data = JSON.parse(v);
-  }catch(e){ /* sin datos previos */ }
-  render();
-}
-let saveTimer;
-async function guardar(){
-  render();
-  try{
-    localStorage.setItem(KEY, JSON.stringify(data));
-    const el = document.getElementById('saveState');
-    el.textContent = 'guardado ✓'; el.style.opacity = 1;
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(()=>{ el.style.opacity = 0; }, 1600);
-  }catch(e){
-    document.getElementById('saveState').textContent = 'no se pudo guardar — reintentá';
-  }
-}
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const ratio = (d,r) => {
-  const a = parseFloat(String(d||'').replace(',','.')), b = parseFloat(String(r||'').replace(',','.'));
-  return (a>0 && b>0) ? '1:'+(b/a).toFixed(1).replace('.',',') : '';
-};
-const tfmt = t => (t && /^\d+([.,]\d+)?$/.test(String(t).trim())) ? t+' s' : (t||'');
-
-/* ================= tabs ================= */
-document.querySelectorAll('nav button').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    document.getElementById('tab-'+b.dataset.tab).classList.add('active');
-  });
-});
-
-/* ================= acciones ================= */
-function toggleNv(){
-  const c = document.getElementById('nvCard');
-  c.style.display = (c.style.display === 'none') ? 'block' : 'none';
-}
-function agregarCafe(){
-  const nombre = document.getElementById('nvNombre').value.trim();
-  if(!nombre) return;
-  const id = uid();
-  data.cafes.unshift({
-    id, nombre,
-    detalle: document.getElementById('nvDetalle').value.trim(),
-    acidez: document.getElementById('nvAcidez').value,
-    amargor: document.getElementById('nvAmargor').value,
-    cuerpo: document.getElementById('nvCuerpo').value,
-    calibres:{}, pruebas:[]
-  });
-  ['nvNombre','nvDetalle'].forEach(i=>document.getElementById(i).value='');
-  ['nvAcidez','nvAmargor','nvCuerpo'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('nvCard').style.display = 'none';
-  abiertos.add(id);
-  guardar();
-}
-
-/* arrastre con mouse para probar los carruseles en PC */
-document.querySelectorAll('.h-scroll').forEach(el=>{
-  let down=false, startX=0, sl=0, moved=false;
-  el.addEventListener('mousedown', e=>{
-    if(e.target.closest('input,select,textarea,button,a')) return;
-    down=true; moved=false; startX=e.pageX; sl=el.scrollLeft;
-    el.classList.add('dragging');
-  });
-  window.addEventListener('mouseup', ()=>{ down=false; el.classList.remove('dragging'); });
-  el.addEventListener('mousemove', e=>{
-    if(!down) return;
-    const dx = e.pageX - startX;
-    if(Math.abs(dx) > 3) moved = true;
-    if(moved){ e.preventDefault(); el.scrollLeft = sl - dx; }
-  });
-});
-function borrarCafe(id){
-  const c = data.cafes.find(x=>x.id===id);
-  if(!confirm('¿Eliminar "'+c.nombre+'" y todas sus pruebas?')) return;
-  data.cafes = data.cafes.filter(x=>x.id!==id);
-  abiertos.delete(id);
-  guardar();
-}
-function toggle(id){
-  abiertos.has(id) ? abiertos.delete(id) : abiertos.add(id);
-  render();
-}
-function agregarPrueba(id){
-  const c = data.cafes.find(x=>x.id===id);
-  const g = s => document.getElementById(s+'-'+id);
-  const p = {
-    id: uid(),
-    fecha: new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit'}),
-    metodo: g('pMet').value,
-    molienda: g('pMol').value,
-    dosis: g('pDos').value.trim(),
-    rendimiento: g('pRen').value.trim(),
-    tiempo: g('pTie').value.trim(),
-    resultado: g('pRes').value,
-    comentario: g('pCom').value.trim()
-  };
-  c.pruebas.unshift(p);
-  if(g('pCal').checked) c.calibres[p.metodo] = { molienda:p.molienda, dosis:p.dosis, rendimiento:p.rendimiento, tiempo:p.tiempo, pruebaId:p.id };
-  guardar();
-}
-function usarComoCalibre(cafeId, pruebaId){
-  const c = data.cafes.find(x=>x.id===cafeId);
-  const p = c.pruebas.find(x=>x.id===pruebaId);
-  c.calibres[p.metodo] = { molienda:p.molienda, dosis:p.dosis, rendimiento:p.rendimiento, tiempo:p.tiempo, pruebaId:p.id };
-  guardar();
-}
-function borrarPrueba(cafeId, pruebaId){
-  const c = data.cafes.find(x=>x.id===cafeId);
-  c.pruebas = c.pruebas.filter(x=>x.id!==pruebaId);
-  for(const m of Object.keys(c.calibres)) if(c.calibres[m].pruebaId===pruebaId) delete c.calibres[m];
-  guardar();
-}
-function ruedaLive(id){
-  document.getElementById('pMolV-'+id).textContent = document.getElementById('pMol-'+id).value;
-}
-
-/* ================= render ================= */
-const chipRes = r => {
-  if(r==='Equilibrado') return '<span class="chip chip-ok">Equilibrado ✓</span>';
-  if(r==='Amargo / quemado') return '<span class="chip chip-amargo">Amargo / quemado</span>';
-  if(r==='Ácido / subextraído') return '<span class="chip chip-acido">Ácido / subextraído</span>';
-  if(r==='Aguado / flojo') return '<span class="chip chip-otro">Aguado / flojo</span>';
-  return '<span class="chip chip-otro">'+esc(r)+'</span>';
-};
-
-function dialHTML(c, metodo, etiqueta){
-  const cal = c.calibres[metodo];
-  if(cal){
-    const r = ratio(cal.dosis, cal.rendimiento);
-    const dr = cal.dosis ? cal.dosis+' g'+(cal.rendimiento ? ' → '+cal.rendimiento+' g' : '') : '';
-    const meta = [dr, r, tfmt(cal.tiempo)].filter(Boolean).join(' · ');
-    return '<div class="dial set"><div class="dial-knob">'+esc(cal.molienda)+'</div><div><div class="dial-label">'+etiqueta+'</div><div class="dial-meta">'+esc(meta||'calibrado')+'</div></div></div>';
-  }
-  return '<div class="dial unset"><div class="dial-knob">—</div><div><div class="dial-label">'+etiqueta+'</div><div class="dial-meta">sin calibrar</div></div></div>';
-}
-
-function perfilHTML(c){
-  const chips = [];
-  if(c.acidez) chips.push('<span class="chip chip-acidez">Acidez '+esc(c.acidez.toLowerCase())+'</span>');
-  if(c.amargor) chips.push('<span class="chip chip-amargor">Amargor '+esc(c.amargor.toLowerCase())+'</span>');
-  if(c.cuerpo) chips.push('<span class="chip chip-cuerpo">Cuerpo '+esc(c.cuerpo.toLowerCase())+'</span>');
-  return chips.length ? '<div class="perfil">'+chips.join('')+'</div>' : '';
-}
-
-function render(){
-  const cont = document.getElementById('listaCafes');
-  const addCard = '<div class="card add" role="button" tabindex="0" onclick="toggleNv()" onkeydown="if(event.key===\'Enter\'){toggleNv()}"><div class="plus">＋</div><span>Nueva variedad</span></div>';
-  if(!data.cafes.length){
-    cont.innerHTML = addCard + '<div class="card empty" style="flex:1"><div class="icon">☕</div>Todavía no cargaste ningún café.<br>Tocá ＋ y arrancá a calibrar.</div>';
-    return;
-  }
-  cont.innerHTML = data.cafes.map(c=>{
-    const open = abiertos.has(c.id);
-    const esCal = p => (c.calibres[p.metodo]||{}).pruebaId === p.id;
-    const pruebas = c.pruebas.length
-      ? c.pruebas.map(p=>`
-        <div class="prueba">
-          <div class="prueba-top">
-            <span class="prueba-fecha">${p.fecha}</span>
-            <span class="chip chip-metodo">${p.metodo==='espresso'?'Espresso':'Prensa'}</span>
-            ${chipRes(p.resultado)}
-            ${esCal(p)?'<span class="chip chip-cal">★ mi calibre</span>':''}
-          </div>
-          <div class="prueba-datos">
-            <span>rueda <b>${esc(p.molienda)}</b></span>
-            ${p.dosis?'<span>dosis <b>'+esc(p.dosis)+' g</b></span>':''}
-            ${p.rendimiento?'<span>rendimiento <b>'+esc(p.rendimiento)+' g</b></span>':''}
-            ${ratio(p.dosis,p.rendimiento)?'<span>ratio <b>'+ratio(p.dosis,p.rendimiento)+'</b></span>':''}
-            ${p.tiempo?'<span>tiempo <b>'+esc(tfmt(p.tiempo))+'</b></span>':''}
-          </div>
-          ${p.comentario?'<div class="prueba-coment">'+esc(p.comentario)+'</div>':''}
-          <div class="prueba-actions">
-            ${esCal(p)?'':'<button class="btn btn-ghost btn-sm" onclick="usarComoCalibre(\''+c.id+'\',\''+p.id+'\')">Usar como calibre</button>'}
-            <button class="btn btn-ghost btn-sm" onclick="borrarPrueba('${c.id}','${p.id}')">Eliminar</button>
-          </div>
-        </div>`).join('')
-      : '<p class="muted">Sin pruebas todavía. Registrá la primera con el formulario de abajo.</p>';
-
-    return `
-    <div class="card cafe ${open?'open':''}">
-      <div class="cafe-head">
-        <div>
-          <div class="cafe-name">${esc(c.nombre)}</div>
-          ${c.detalle?'<div class="cafe-detail">'+esc(c.detalle)+'</div>':''}
-        </div>
-      </div>
-      ${perfilHTML(c)}
-      <div class="cafe-mid">
-        <div class="dials">
-          ${dialHTML(c,'espresso','Espresso')}
-          ${dialHTML(c,'prensa','Prensa francesa')}
-        </div>
-        <div class="notas" role="button" tabindex="0" onclick="editarNotas('${c.id}')" onkeydown="if(event.key==='Enter'){editarNotas('${c.id}')}"><div class="notas-t">Mis notas ✎</div>${c.notas?esc(c.notas):'<i>Tocá para anotar impresiones de esta variedad…</i>'}</div>
-      </div>
-      ${c.pruebas.length?'<div class="ultima">Última prueba: '+c.pruebas[0].fecha+' · '+(c.pruebas[0].metodo==='espresso'?'Espresso':'Prensa')+' · '+esc(c.pruebas[0].resultado)+'</div>':''}
-      <div class="cafe-foot">
-        <button class="btn btn-ghost btn-sm" aria-expanded="${open}" onclick="toggle('${c.id}')">${open?'▴ Ocultar registro':'Pruebas y registro ('+c.pruebas.length+')'}</button>
-      </div>
-      <div class="cafe-body">
-        <hr class="divider">
-        <h3>Pruebas (${c.pruebas.length})</h3>
-        ${pruebas}
-        <hr class="divider">
-        <h3>Nueva prueba</h3>
-        <div class="row">
-          <div><label for="pMet-${c.id}">Método</label>
-            <select id="pMet-${c.id}"><option value="espresso">Espresso</option><option value="prensa">Prensa francesa</option></select></div>
-          <div><label for="pDos-${c.id}">Dosis (g)</label>
-            <input id="pDos-${c.id}" inputmode="decimal" placeholder="18"></div>
-          <div><label for="pRen-${c.id}">Rendimiento (g)</label>
-            <input id="pRen-${c.id}" inputmode="decimal" placeholder="36"></div>
-        </div>
-        <label for="pMol-${c.id}">Rueda de molienda (Oster 0–30)</label>
-        <div class="rueda">
-          <input type="range" id="pMol-${c.id}" min="0" max="30" step="1" value="15" oninput="ruedaLive('${c.id}')" aria-describedby="pMolV-${c.id}">
-          <span class="rueda-val" id="pMolV-${c.id}">15</span>
-        </div>
-        <div class="row">
-          <div><label for="pTie-${c.id}">Tiempo (s)</label>
-            <input id="pTie-${c.id}" inputmode="numeric" placeholder="28"></div>
-          <div><label for="pRes-${c.id}">Resultado</label>
-            <select id="pRes-${c.id}">
-              <option>Equilibrado</option>
-              <option>Amargo / quemado</option>
-              <option>Ácido / subextraído</option>
-              <option>Aguado / flojo</option>
-              <option>Otro</option>
-            </select></div>
-        </div>
-        <label for="pCom-${c.id}">Notas de cata / comentarios</label>
-        <textarea id="pCom-${c.id}" placeholder="Cuerpo, dulzor, qué ajustarías…"></textarea>
-        <div class="check"><input type="checkbox" id="pCal-${c.id}"><label for="pCal-${c.id}" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);font-weight:700">Marcar como mi calibre para este método</label></div>
-        <div style="display:flex;gap:10px;margin-top:14px">
-          <button class="btn btn-primary" onclick="agregarPrueba('${c.id}')">Guardar prueba</button>
-          <button class="btn btn-ghost" onclick="borrarCafe('${c.id}')">Eliminar café</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('') + addCard;
-}
-
-/* ================= timer (timestamp real: sobrevive suspensión) ================= */
-let tInt = null, wakeLock = null;
-const tKey = 'ch-timer-end';
-const fmt = s => Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
-async function reqWake(){ try{ if('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); }catch(e){} }
-function relWake(){ try{ wakeLock && wakeLock.release(); }catch(e){} wakeLock = null; }
-function askNotif(){ if('Notification' in window && Notification.permission==='default') Notification.requestPermission(); }
-function setTimer(sec){ localStorage.setItem(tKey, Date.now()+sec*1000); askNotif(); reqWake(); startTick(); }
-function addTimer(d){
-  const end = parseInt(localStorage.getItem(tKey)||'0');
-  const base = end > Date.now() ? end : Date.now();
-  localStorage.setItem(tKey, Math.max(Date.now()+1000, base + d*1000));
-  reqWake(); startTick();
-}
-function stopTimer(){ localStorage.removeItem(tKey); clearInterval(tInt); tInt=null; relWake(); pinta(0,false); }
-function beep(){
-  try{
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    [0,.35,.7].forEach(t=>{
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.connect(g); g.connect(ctx.destination); o.frequency.value=880;
-      g.gain.setValueAtTime(.3, ctx.currentTime+t);
-      g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+t+.3);
-      o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+.3);
-    });
-  }catch(e){}
-}
-function pinta(seg, done){
-  const d = document.getElementById('timerDisplay');
-  d.textContent = fmt(Math.max(0,seg));
-  d.classList.toggle('done', done);
-  document.getElementById('timerBadge').textContent = seg>0 ? '· '+fmt(seg) : (done ? '· ¡listo!' : '');
-}
-function startTick(){ if(!tInt){ tInt = setInterval(tick, 250); } tick(); }
-function tick(){
-  const end = parseInt(localStorage.getItem(tKey)||'0');
-  if(!end){ clearInterval(tInt); tInt=null; return; }
-  const seg = Math.round((end - Date.now())/1000);
-  if(seg <= 0){
-    localStorage.removeItem(tKey); clearInterval(tInt); tInt=null; relWake();
-    pinta(0, true); beep();
-    if(navigator.vibrate) navigator.vibrate([300,150,300]);
-    if('Notification' in window && Notification.permission==='granted')
-      new Notification('CoffeeHouse', { body:'⏱ Tiempo cumplido — a servir.' });
-  } else pinta(seg, false);
-}
-document.addEventListener('visibilitychange', ()=>{
-  if(document.visibilityState==='visible' && parseInt(localStorage.getItem(tKey)||'0') > Date.now()){
-    reqWake(); startTick();
-  }
-});
-if(parseInt(localStorage.getItem(tKey)||'0') > Date.now()) startTick();
-
-function toggleDatos(){ document.getElementById('datosMenu').classList.toggle('open'); }
-function editarNotas(id){
-  const c = data.cafes.find(x=>x.id===id);
-  const t = prompt('Notas de '+c.nombre+':', c.notas||'');
-  if(t===null) return;
-  c.notas = t.trim(); guardar();
-}
-
-/* ================= modo barra (tema oscuro) ================= */
-function toggleTema(){
-  const oscuro = document.documentElement.dataset.theme === 'dark';
-  document.documentElement.dataset.theme = oscuro ? '' : 'dark';
-  localStorage.setItem('ch-tema', oscuro ? 'claro' : 'dark');
-}
-if(localStorage.getItem('ch-tema') === 'dark') document.documentElement.dataset.theme = 'dark';
-
-/* ================= nav auto-oculta al scrollear ================= */
-let navY = window.scrollY;
-window.addEventListener('scroll', ()=>{
-  const nav = document.querySelector('nav');
-  const y = window.scrollY;
-  if(y > navY + 6 && y > 60) nav.classList.add('nav-oculta');
-  else if(y < navY - 6) nav.classList.remove('nav-oculta');
-  navY = y;
-}, {passive:true});
-
-/* ================= exportar / importar ================= */
-function exportar(){
-  const t = localStorage.getItem(KEY) || '{"cafes":[]}';
-  const ok = ()=>{ const el=document.getElementById('saveState'); el.textContent='datos copiados al portapapeles ✓'; el.style.opacity=1; };
-  if(navigator.clipboard) navigator.clipboard.writeText(t).then(ok, ()=>prompt('Copiá este JSON:', t));
-  else prompt('Copiá este JSON:', t);
-}
-function importar(){
-  const t = prompt('Pegá acá el JSON exportado desde otra copia de CoffeeHouse:');
-  if(!t) return;
-  try{
-    const d = JSON.parse(t);
-    if(!Array.isArray(d.cafes)) throw 0;
-    data = d; guardar();
-  }catch(e){ alert('Eso no parece un backup válido de CoffeeHouse.'); }
-}
-
-/* ================= service worker (offline) ================= */
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
-
-cargar();
+  // Completá estas dos URLs una sola vez y todos los botones quedan enlazados.
+  const APP_URL  = "";  // ej: https://TU-USUARIO.github.io/coffeehouse/
+  const REPO_URL = "";  // ej: https://github.com/TU-USUARIO/coffeehouse
+  document.querySelectorAll('[data-app]').forEach(a=>{ if(APP_URL) a.href=APP_URL; else a.style.display='none'; });
+  document.querySelectorAll('[data-repo]').forEach(a=>{ if(REPO_URL) a.href=REPO_URL; else a.style.display='none'; });
 </script>
 </body>
 </html>
