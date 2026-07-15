@@ -154,7 +154,8 @@
   .h-scroll>.card{scroll-snap-align:start;margin-bottom:0}
   .card.cafe{flex:0 0 100%;display:flex;flex-direction:column}
   .cafe .row{grid-template-columns:1fr 1fr 1fr}
-  .cafe-foot{margin-top:auto;padding-top:12px}
+  .cafe-foot{margin-top:auto;padding-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+  .edit-var{margin-top:10px;border-top:1.5px dashed var(--line)}
   .ultima{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-top:10px}
   .card.add{flex:0 0 110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:var(--ink-soft);border-style:dashed;min-height:170px}
   .card.add:hover{color:var(--ink)}
@@ -241,8 +242,8 @@
       <div class="row">
         <div><label for="nvAcidez">Acidez</label>
           <select id="nvAcidez"><option value="">—</option><option>Alta</option><option>Media</option><option>Baja</option></select></div>
-        <div><label for="nvAmargor">Amargor</label>
-          <select id="nvAmargor"><option value="">—</option><option>Fuerte</option><option>Medio</option><option>Suave</option><option>Dulce</option></select></div>
+        <div><label for="nvTueste">Tueste</label>
+          <select id="nvTueste"><option value="">—</option><option>Suave</option><option>Medio</option><option>Alto</option></select></div>
         <div><label for="nvCuerpo">Cuerpo</label>
           <select id="nvCuerpo"><option value="">—</option><option>Cremoso</option><option>Medio</option><option>Ligero</option></select></div>
       </div>
@@ -305,22 +306,6 @@
       <div class="card receta"><h3>Espresso</h3>
         <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:38%;background:#4A2C17"></div></div><div class="cup-handle"></div></div><div class="taza-ml">60–70 ml</div></div>
         <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Café <b>18 g → 36 g</b></span><span class="ing">Tiempo <b>25–30 s</b></span></div></div>
-      <div class="card receta"><h3>Ristretto</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:28%;background:#38200F"></div></div><div class="cup-handle"></div></div><div class="taza-ml">60 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#38200F"></i>Café <b>18 g → 22–27 g</b></span><span class="ing">Ratio <b>1:1–1:1,5</b></span><span class="ing">Tiempo <b>~20 s</b></span></div>
-        <p class="nota">Espresso "restringido": puede ser simple o doble, pero en especialidad se tira casi siempre doble (como acá). Base ideal del magic.</p></div>
-      <div class="card receta"><h3>Americano</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:32%;background:#4A2C17"></div><div class="cup-layer" style="height:44%;background:#C7E0E4"></div></div><div class="cup-handle"></div></div><div class="taza-ml">180 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble</b></span><span class="ing"><i class="dot" style="background:#C7E0E4"></i>Agua caliente <b>90–120 ml</b></span></div>
-        <p class="nota">Espresso primero, agua encima. Más suave y diluido.</p></div>
-      <div class="card receta"><h3>Long black</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:44%;background:#C7E0E4"></div><div class="cup-layer" style="height:30%;background:#4A2C17"></div></div><div class="cup-handle"></div></div><div class="taza-ml">120–160 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#C7E0E4"></i>Agua <b>90–120 ml</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble encima</b></span></div>
-        <p class="nota">Agua primero, espresso encima: conserva la crema. Más intenso que el americano.</p></div>
-      <div class="card receta"><h3>Cortado</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:34%;background:#4A2C17"></div><div class="cup-layer" style="height:34%;background:#F1DFC2"></div><div class="cup-layer" style="height:6%;background:#FBF4E4"></div></div></div><div class="taza-ml">90 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>simple/doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>1:1 (~40 ml)</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>mínima</b></span></div>
-        <p class="nota">En vasito de vidrio, como corresponde.</p></div>
       <div class="card receta"><h3>Flat white</h3>
         <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:26%;background:#4A2C17"></div><div class="cup-layer" style="height:56%;background:#F1DFC2"></div><div class="cup-layer" style="height:9%;background:#FBF4E4"></div></div><div class="cup-handle"></div></div><div class="taza-ml">160–180 ml</div></div>
         <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>110–130 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Microespuma <b>0,5 cm</b></span></div>
@@ -329,24 +314,40 @@
         <div class="receta-top"><div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:24%;background:#38200F"></div><div class="cup-layer" style="height:58%;background:#F1DFC2"></div><div class="cup-layer" style="height:9%;background:#FBF4E4"></div></div></div><div class="taza-ml">~160 ml</div></div>
         <div class="ing-line"><span class="ing"><i class="dot" style="background:#38200F"></i>Base <b>doble ristretto</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>hasta llenar</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Microespuma <b>0,5 cm</b></span></div>
         <p class="nota">Un flat white con doble ristretto, servido en vasito de vidrio: más dulzor, menos volumen. El favorito de la casa.</p></div>
+      <div class="card receta"><h3>Cortado</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:34%;background:#4A2C17"></div><div class="cup-layer" style="height:34%;background:#F1DFC2"></div><div class="cup-layer" style="height:6%;background:#FBF4E4"></div></div></div><div class="taza-ml">90 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>simple/doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>1:1 (~40 ml)</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>mínima</b></span></div>
+        <p class="nota">En vasito de vidrio, como corresponde.</p></div>
+      <div class="card receta"><h3>Americano</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:32%;background:#4A2C17"></div><div class="cup-layer" style="height:44%;background:#C7E0E4"></div></div><div class="cup-handle"></div></div><div class="taza-ml">180 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble</b></span><span class="ing"><i class="dot" style="background:#C7E0E4"></i>Agua caliente <b>90–120 ml</b></span></div>
+        <p class="nota">Espresso primero, agua encima. Más suave y diluido.</p></div>
+      <div class="card receta"><h3>Long black</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:44%;background:#C7E0E4"></div><div class="cup-layer" style="height:30%;background:#4A2C17"></div></div><div class="cup-handle"></div></div><div class="taza-ml">120–160 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#C7E0E4"></i>Agua <b>90–120 ml</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble encima</b></span></div>
+        <p class="nota">Agua primero, espresso encima: conserva la crema. Más intenso que el americano.</p></div>
+      <div class="card receta"><h3>Ristretto</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:28%;background:#38200F"></div></div><div class="cup-handle"></div></div><div class="taza-ml">60 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#38200F"></i>Café <b>18 g → 22–27 g</b></span><span class="ing">Ratio <b>1:1–1:1,5</b></span><span class="ing">Tiempo <b>~20 s</b></span></div>
+        <p class="nota">Espresso "restringido": puede ser simple o doble, pero en especialidad se tira casi siempre doble (como acá). Base ideal del magic.</p></div>
       <div class="card receta"><h3>Latte</h3>
         <div class="receta-top"><div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:20%;background:#4A2C17"></div><div class="cup-layer" style="height:60%;background:#F1DFC2"></div><div class="cup-layer" style="height:12%;background:#FBF4E4"></div></div></div><div class="taza-ml">240 ml</div></div>
         <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>180–200 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>1 cm</b></span></div></div>
       <div class="card receta"><h3>Cappuccino</h3>
         <div class="receta-top"><div class="cup-outer"><div class="cup taza"><div class="cup-layer" style="height:28%;background:#4A2C17"></div><div class="cup-layer" style="height:32%;background:#F1DFC2"></div><div class="cup-layer" style="height:30%;background:#FBF4E4"></div></div><div class="cup-handle"></div></div><div class="taza-ml">180 ml</div></div>
         <div class="ing-line"><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>simple/doble</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>~100 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>2 cm, tercios</b></span></div></div>
-      <div class="card receta"><h3>Irish coffee</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:16%;background:#B06F2B"></div><div class="cup-layer" style="height:48%;background:#4A2C17"></div><div class="cup-layer" style="height:18%;background:#FFF3D6"></div></div></div><div class="taza-ml">~200 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#B06F2B"></i>Whisky + azúcar <b>30–40 ml</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Café filtrado <b>~120 ml</b></span><span class="ing"><i class="dot" style="background:#FFF3D6"></i>Crema <b>encima</b></span></div>
-        <p class="nota">Verté la crema sobre el dorso de una cuchara para que flote. Vaso templado primero.</p></div>
-      <div class="card receta"><h3>Affogato</h3>
-        <div class="receta-top"><div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:48%;background:#F6ECD8"></div><div class="cup-layer" style="height:24%;background:#4A2C17"></div></div></div><div class="taza-ml">~120 ml</div></div>
-        <div class="ing-line"><span class="ing"><i class="dot" style="background:#F6ECD8"></i>Helado (vainilla) <b>1 bocha</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso caliente <b>simple/doble</b></span></div>
-        <p class="nota">El contraste caliente-frío es el punto: espresso recién extraído, directo sobre el helado.</p></div>
       <div class="card receta"><h3>Caramel macchiato</h3>
         <div class="receta-top"><div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:9%;background:#C6862F"></div><div class="cup-layer" style="height:50%;background:#F1DFC2"></div><div class="cup-layer" style="height:11%;background:#4A2C17"></div><div class="cup-layer" style="height:14%;background:#FBF4E4"></div></div></div><div class="taza-ml">~240 ml</div></div>
         <div class="ing-line"><span class="ing"><i class="dot" style="background:#C6862F"></i>Syrup <b>~15 ml</b></span><span class="ing"><i class="dot" style="background:#F1DFC2"></i>Leche <b>~180 ml</b></span><span class="ing"><i class="dot" style="background:#FBF4E4"></i>Espuma <b>1 cm</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso <b>"manchado"</b></span></div>
         <p class="nota">Genérico adaptable: cambiá el syrup (vainilla, caramelo, avellana) y tenés toda la familia de macchiatos saborizados.</p></div>
+      <div class="card receta"><h3>Affogato</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup vaso"><div class="cup-layer" style="height:48%;background:#F6ECD8"></div><div class="cup-layer" style="height:24%;background:#4A2C17"></div></div></div><div class="taza-ml">~120 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#F6ECD8"></i>Helado (vainilla) <b>1 bocha</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Espresso caliente <b>simple/doble</b></span></div>
+        <p class="nota">El contraste caliente-frío es el punto: espresso recién extraído, directo sobre el helado.</p></div>
+      <div class="card receta"><h3>Irish coffee</h3>
+        <div class="receta-top"><div class="cup-outer"><div class="cup alto"><div class="cup-layer" style="height:16%;background:#B06F2B"></div><div class="cup-layer" style="height:48%;background:#4A2C17"></div><div class="cup-layer" style="height:18%;background:#FFF3D6"></div></div></div><div class="taza-ml">~200 ml</div></div>
+        <div class="ing-line"><span class="ing"><i class="dot" style="background:#B06F2B"></i>Whisky + azúcar <b>30–40 ml</b></span><span class="ing"><i class="dot" style="background:#4A2C17"></i>Café filtrado <b>~120 ml</b></span><span class="ing"><i class="dot" style="background:#FFF3D6"></i>Crema <b>encima</b></span></div>
+        <p class="nota">Verté la crema sobre el dorso de una cuchara para que flote. Vaso templado primero.</p></div>
     </div>
   </section>
 
@@ -355,13 +356,16 @@
     <div class="card" style="text-align:center">
       <h2>Timer de preparación</h2>
       <div class="timer-big" id="timerDisplay">0:00</div>
-      <p class="muted">La pantalla queda encendida mientras corre. Si igual se suspende, el conteo sigue: al despertar se recalcula y al terminar suena, vibra y notifica.</p>
+      <p class="muted">Cronómetro: cuenta hacia arriba, para mirar segundos y gramos juntos. Los presets cuentan regresivo y al terminar suenan, vibran y notifican. La pantalla queda encendida mientras corre.</p>
       <div class="timer-actions">
-        <button class="btn btn-primary" onclick="setTimer(30)">▶ Espresso · 30 s</button>
-        <button class="btn btn-primary" onclick="setTimer(240)">▶ Prensa · 4:00</button>
+        <button class="btn btn-primary" onclick="startCrono()">▶ Cronómetro</button>
+        <button class="btn btn-ghost" onclick="stopTimer()">■ Detener</button>
+      </div>
+      <div class="timer-actions">
+        <button class="btn btn-ghost" onclick="setTimer(30)">⏳ Espresso · 30 s</button>
+        <button class="btn btn-ghost" onclick="setTimer(240)">⏳ Prensa · 4:00</button>
         <button class="btn btn-ghost" onclick="addTimer(5)">+5 s</button>
         <button class="btn btn-ghost" onclick="addTimer(-5)">−5 s</button>
-        <button class="btn btn-ghost" onclick="stopTimer()">■ Detener</button>
       </div>
     </div>
   </section>
@@ -373,11 +377,18 @@
 const KEY = 'bitacora-cafe';
 let data = { cafes: [] };
 const abiertos = new Set();
+const editando = new Set();
 
 async function cargar(){
   try{
     const v = localStorage.getItem(KEY);
     if(v) data = JSON.parse(v);
+    (data.cafes||[]).forEach(c=>{
+      if(c.amargor && !c.tueste){
+        c.tueste = c.amargor==='Fuerte' ? 'Alto' : (c.amargor==='Medio' ? 'Medio' : 'Suave');
+        delete c.amargor;
+      }
+    });
   }catch(e){ /* sin datos previos */ }
   render();
 }
@@ -425,12 +436,12 @@ function agregarCafe(){
     id, nombre,
     detalle: document.getElementById('nvDetalle').value.trim(),
     acidez: document.getElementById('nvAcidez').value,
-    amargor: document.getElementById('nvAmargor').value,
+    tueste: document.getElementById('nvTueste').value,
     cuerpo: document.getElementById('nvCuerpo').value,
     calibres:{}, pruebas:[]
   });
   ['nvNombre','nvDetalle'].forEach(i=>document.getElementById(i).value='');
-  ['nvAcidez','nvAmargor','nvCuerpo'].forEach(i=>document.getElementById(i).value='');
+  ['nvAcidez','nvTueste','nvCuerpo'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('nvCard').style.display = 'none';
   abiertos.add(id);
   guardar();
@@ -463,6 +474,25 @@ function toggle(id){
   abiertos.has(id) ? abiertos.delete(id) : abiertos.add(id);
   render();
 }
+function toggleEdit(id){
+  editando.has(id) ? editando.delete(id) : editando.add(id);
+  render();
+}
+function guardarEdicion(id){
+  const c = data.cafes.find(x=>x.id===id);
+  const g = s => document.getElementById(s+'-'+id);
+  const nombre = g('eNom').value.trim();
+  if(!nombre){ g('eNom').focus(); return; }
+  c.nombre = nombre;
+  c.detalle = g('eDet').value.trim();
+  c.acidez = g('eAci').value;
+  c.tueste = g('eTue').value;
+  c.cuerpo = g('eCue').value;
+  editando.delete(id);
+  guardar();
+}
+const opts = (list, cur) => '<option value=""'+(cur?'':' selected')+'>—</option>' +
+  list.map(o=>'<option'+(o===cur?' selected':'')+'>'+o+'</option>').join('');
 function agregarPrueba(id){
   const c = data.cafes.find(x=>x.id===id);
   const g = s => document.getElementById(s+'-'+id);
@@ -520,7 +550,7 @@ function dialHTML(c, metodo, etiqueta){
 function perfilHTML(c){
   const chips = [];
   if(c.acidez) chips.push('<span class="chip chip-acidez">Acidez '+esc(c.acidez.toLowerCase())+'</span>');
-  if(c.amargor) chips.push('<span class="chip chip-amargor">Amargor '+esc(c.amargor.toLowerCase())+'</span>');
+  if(c.tueste) chips.push('<span class="chip chip-amargor">Tueste '+esc(c.tueste.toLowerCase())+'</span>');
   if(c.cuerpo) chips.push('<span class="chip chip-cuerpo">Cuerpo '+esc(c.cuerpo.toLowerCase())+'</span>');
   return chips.length ? '<div class="perfil">'+chips.join('')+'</div>' : '';
 }
@@ -578,7 +608,24 @@ function render(){
       ${c.pruebas.length?'<div class="ultima">Última prueba: '+c.pruebas[0].fecha+' · '+(c.pruebas[0].metodo==='espresso'?'Espresso':'Prensa')+' · '+esc(c.pruebas[0].resultado)+'</div>':''}
       <div class="cafe-foot">
         <button class="btn btn-ghost btn-sm" aria-expanded="${open}" onclick="toggle('${c.id}')">${open?'▴ Ocultar registro':'Pruebas y registro ('+c.pruebas.length+')'}</button>
+        <button class="btn btn-ghost btn-sm" onclick="toggleEdit('${c.id}')">${editando.has(c.id)?'▴ Cerrar edición':'✎ Editar variedad'}</button>
       </div>
+      ${editando.has(c.id)?`
+      <div class="edit-var">
+        <label for="eNom-${c.id}">Variedad</label>
+        <input id="eNom-${c.id}" value="${esc(c.nombre)}">
+        <div class="row">
+          <div><label for="eAci-${c.id}">Acidez</label><select id="eAci-${c.id}">${opts(['Alta','Media','Baja'],c.acidez)}</select></div>
+          <div><label for="eTue-${c.id}">Tueste</label><select id="eTue-${c.id}">${opts(['Suave','Medio','Alto'],c.tueste)}</select></div>
+          <div><label for="eCue-${c.id}">Cuerpo</label><select id="eCue-${c.id}">${opts(['Cremoso','Medio','Ligero'],c.cuerpo)}</select></div>
+        </div>
+        <label for="eDet-${c.id}">Detalle</label>
+        <input id="eDet-${c.id}" value="${esc(c.detalle||'')}">
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <button class="btn btn-primary" onclick="guardarEdicion('${c.id}')">Guardar cambios</button>
+          <button class="btn btn-ghost" onclick="toggleEdit('${c.id}')">Cancelar</button>
+        </div>
+      </div>`:''}
       <div class="cafe-body">
         <hr class="divider">
         <h3>Pruebas (${c.pruebas.length})</h3>
@@ -625,18 +672,21 @@ function render(){
 /* ================= timer (timestamp real: sobrevive suspensión) ================= */
 let tInt = null, wakeLock = null;
 const tKey = 'ch-timer-end';
+const cKey = 'ch-crono-start';
 const fmt = s => Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
 async function reqWake(){ try{ if('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); }catch(e){} }
 function relWake(){ try{ wakeLock && wakeLock.release(); }catch(e){} wakeLock = null; }
 function askNotif(){ if('Notification' in window && Notification.permission==='default') Notification.requestPermission(); }
-function setTimer(sec){ localStorage.setItem(tKey, Date.now()+sec*1000); askNotif(); reqWake(); startTick(); }
+function startCrono(){ localStorage.removeItem(tKey); localStorage.setItem(cKey, Date.now()); reqWake(); startTick(); }
+function setTimer(sec){ localStorage.removeItem(cKey); localStorage.setItem(tKey, Date.now()+sec*1000); askNotif(); reqWake(); startTick(); }
 function addTimer(d){
+  if(localStorage.getItem(cKey)) return; /* el cronómetro no se ajusta */
   const end = parseInt(localStorage.getItem(tKey)||'0');
   const base = end > Date.now() ? end : Date.now();
   localStorage.setItem(tKey, Math.max(Date.now()+1000, base + d*1000));
   reqWake(); startTick();
 }
-function stopTimer(){ localStorage.removeItem(tKey); clearInterval(tInt); tInt=null; relWake(); pinta(0,false); }
+function stopTimer(){ localStorage.removeItem(tKey); localStorage.removeItem(cKey); clearInterval(tInt); tInt=null; relWake(); pinta(0,false); }
 function beep(){
   try{
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
@@ -657,6 +707,8 @@ function pinta(seg, done){
 }
 function startTick(){ if(!tInt){ tInt = setInterval(tick, 250); } tick(); }
 function tick(){
+  const cs = parseInt(localStorage.getItem(cKey)||'0');
+  if(cs){ pinta(Math.floor((Date.now()-cs)/1000), false); return; }
   const end = parseInt(localStorage.getItem(tKey)||'0');
   if(!end){ clearInterval(tInt); tInt=null; return; }
   const seg = Math.round((end - Date.now())/1000);
@@ -669,11 +721,11 @@ function tick(){
   } else pinta(seg, false);
 }
 document.addEventListener('visibilitychange', ()=>{
-  if(document.visibilityState==='visible' && parseInt(localStorage.getItem(tKey)||'0') > Date.now()){
+  if(document.visibilityState==='visible' && (localStorage.getItem(cKey) || parseInt(localStorage.getItem(tKey)||'0') > Date.now())){
     reqWake(); startTick();
   }
 });
-if(parseInt(localStorage.getItem(tKey)||'0') > Date.now()) startTick();
+if(localStorage.getItem(cKey) || parseInt(localStorage.getItem(tKey)||'0') > Date.now()) startTick();
 
 function toggleDatos(){ document.getElementById('datosMenu').classList.toggle('open'); }
 function editarNotas(id){
